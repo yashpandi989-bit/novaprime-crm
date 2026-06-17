@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,14 +27,18 @@ type Product = {
   description: string;
   status: string;
 };
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ||
   "https://novaprime-backend.vercel.app";
+
 export default function ProductsPage() {
+  const router = useRouter();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
-const router = useRouter();
+
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [hsn, setHsn] = useState("");
@@ -50,7 +55,8 @@ const router = useRouter();
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
+      const res = await axios.get(`${API_BASE}/api/products`);
+      console.log("Products API:", res.data);
       setProducts(res.data.products || []);
     } catch (error) {
       console.error("Products fetch error:", error);
@@ -59,7 +65,9 @@ const router = useRouter();
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) =>
-      `${product.name} ${product.category} ${product.hsn} ${product.unit}`
+      `${product.name || ""} ${product.category || ""} ${product.hsn || ""} ${
+        product.unit || ""
+      }`
         .toLowerCase()
         .includes(search.toLowerCase())
     );
@@ -76,8 +84,8 @@ const router = useRouter();
   );
 
   const lowStock = products.filter(
-  (product) => product.stock > 0 && product.stock <= 10
-).length;
+    (product) => product.stock > 0 && product.stock <= 10
+  ).length;
 
   const resetForm = () => {
     setName("");
@@ -98,7 +106,7 @@ const router = useRouter();
         return;
       }
 
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, {
+      await axios.post(`${API_BASE}/api/products`, {
         name,
         category,
         hsn,
@@ -123,7 +131,7 @@ const router = useRouter();
     if (!confirm("Delete this product?")) return;
 
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`);
+      await axios.delete(`${API_BASE}/api/products/${id}`);
       fetchProducts();
     } catch (error) {
       console.error("Product delete error:", error);
@@ -136,9 +144,7 @@ const router = useRouter();
       <div className="min-h-screen bg-slate-50 p-8">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
-              Products
-            </h1>
+            <h1 className="text-3xl font-bold text-slate-900">Products</h1>
             <p className="text-slate-500">
               Manage construction products, HSN, GST, stock and rate.
             </p>
@@ -228,7 +234,7 @@ const router = useRouter();
                           : "bg-slate-100 text-slate-700"
                       }`}
                     >
-                      {product.status}
+                      {product.status || "Active"}
                     </span>
                   </div>
 
@@ -267,29 +273,31 @@ const router = useRouter();
                     )}
                   </div>
 
-                 <div className="mt-5 flex gap-2">
-  <Button
-    variant="outline"
-    className="flex-1"
-    onClick={() => router.push(`/products/${product._id}`)}
-  >
-    View
-  </Button>
+                  <div className="mt-5 flex gap-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => router.push(`/products/${product._id}`)}
+                    >
+                      View
+                    </Button>
 
-  <Button
-    className="flex-1"
-    onClick={() => router.push(`/products/edit/${product._id}`)}
-  >
-    Edit
-  </Button>
+                    <Button
+                      className="flex-1"
+                      onClick={() =>
+                        router.push(`/products/edit/${product._id}`)
+                      }
+                    >
+                      Edit
+                    </Button>
 
-  <Button
-    variant="outline"
-    onClick={() => deleteProduct(product._id)}
-  >
-    <Trash2 className="h-4 w-4 text-red-500" />
-  </Button>
-</div>
+                    <Button
+                      variant="outline"
+                      onClick={() => deleteProduct(product._id)}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
                 </div>
               ))}
 
