@@ -34,13 +34,18 @@ export default function InvoicesPage() {
   }, []);
 
   const fetchInvoices = async () => {
-    try {
-      const res = await axios.get("http://192.168.0.106:5000/api/invoices");
-      setInvoices(res.data.invoices || []);
-    } catch (error) {
-      console.error("Invoice fetch error:", error);
-    }
-  };
+  try {
+    const API_BASE =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://novaprime-backend.vercel.app";
+
+    const res = await axios.get(`${API_BASE}/api/invoices`);
+
+    setInvoices(res.data.invoices || []);
+  } catch (error) {
+    console.error("Invoice fetch error:", error);
+  }
+};
 
   const totalAmount = invoices.reduce(
     (sum, inv) => sum + (inv.grandTotal || 0),
@@ -75,6 +80,7 @@ export default function InvoicesPage() {
             </Button>
           </Link>
         </div>
+        
 
         <div className="mb-6 grid gap-6 md:grid-cols-4">
           <Card className="rounded-3xl border-0 shadow-lg">
@@ -188,20 +194,40 @@ export default function InvoicesPage() {
 
                       <td className="p-4">
                         <div className="flex justify-end gap-3">
-                         <Link href={`/invoices/preview/${invoice._id}`}>
-  <button className="rounded-lg border p-2 hover:bg-slate-100">
-    <Eye className="h-4 w-4" />
+  <Link href={`/invoices/preview/${invoice._id}`}>
+    <button className="rounded-lg border p-2 hover:bg-slate-100" title="View">
+      <Eye className="h-4 w-4" />
+    </button>
+  </Link>
+
+  <button
+    className="rounded-lg border p-2 hover:bg-slate-100"
+    title="Download"
+    onClick={() => {
+      window.open(`/invoices/preview/${invoice._id}`, "_blank");
+    }}
+  >
+    <Download className="h-4 w-4 text-blue-600" />
   </button>
-</Link>
 
-                          <button className="rounded-lg border p-2 hover:bg-slate-100">
-                            <Download className="h-4 w-4 text-blue-600" />
-                          </button>
+  <button
+    className="rounded-lg border p-2 hover:bg-slate-100"
+    title="WhatsApp"
+    onClick={() => {
+      const invoiceUrl = `${window.location.origin}/invoices/preview/${invoice._id}`;
+      const message = `Novaprime Engineering Invoice\nInvoice No: ${invoice.invoiceNo}\nAmount: ₹${(
+        invoice.grandTotal || 0
+      ).toLocaleString("en-IN")}\n${invoiceUrl}`;
 
-                          <button className="rounded-lg border p-2 hover:bg-slate-100">
-                            <Send className="h-4 w-4 text-green-600" />
-                          </button>
-                        </div>
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(message)}`,
+        "_blank"
+      );
+    }}
+  >
+    <Send className="h-4 w-4 text-green-600" />
+  </button>
+</div>
                       </td>
                     </tr>
                   ))}

@@ -29,7 +29,10 @@ export default function ProductViewPage() {
 
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(`http://192.168.0.106:5000/api/products/${id}`);
+      const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://novaprime-backend.vercel.app";
+      const res = await axios.get(`${API_BASE}/api/products/${id}`);
       setProduct(res.data.product);
     } catch (error) {
       console.error(error);

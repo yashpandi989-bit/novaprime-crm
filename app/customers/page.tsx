@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-const API_URL = "http://192.168.0.106:5000";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  "https://novaprime-backend.vercel.app";
 
 type Customer = {
   _id: string;
@@ -66,7 +68,7 @@ export default function CustomersPage() {
 
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/customers`);
+      const res = await axios.get(`${API_BASE}/api/customers`);
       setCustomers(res.data.customers || []);
     } catch (error) {
       console.error("Customer fetch error:", error);
@@ -105,7 +107,7 @@ export default function CustomersPage() {
         return;
       }
 
-      await axios.post(`${API_URL}/api/customers`, {
+      await axios.post(`${API_BASE}/api/customers`, {
         name,
         company,
         phone,
@@ -132,7 +134,7 @@ export default function CustomersPage() {
     if (!confirm("Delete this customer?")) return;
 
     try {
-      await axios.delete(`${API_URL}/api/customers/${id}`);
+      await axios.delete(`${API_BASE}/api/customers/${id}`);
       fetchCustomers();
     } catch (error) {
       console.error("Customer delete error:", error);

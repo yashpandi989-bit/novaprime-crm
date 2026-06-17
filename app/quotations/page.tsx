@@ -21,7 +21,9 @@ import {
 } from "lucide-react";
 
 const COMPANY_STATE_CODE = "27";
-const API_BASE = "http://localhost:5000/api";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://novaprime-backend.vercel.app";
 
 type Product = {
   _id: string;
@@ -179,13 +181,18 @@ export default function QuotationsPage() {
   }, []);
 
   const fetchProducts = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/products`);
-      setProducts(res.data.products || []);
-    } catch (error) {
-      console.error("Products fetch error:", error);
-    }
-  };
+  try {
+    console.log("Loading products from:", `${API_BASE}/api/products`);
+
+    const res = await axios.get(`${API_BASE}/api/products`);
+
+    console.log("Products Response:", res.data);
+
+    setProducts(res.data.products || []);
+  } catch (error) {
+    console.error("Products fetch error:", error);
+  }
+};
 
   const billStateCode = gstin.slice(0, 2);
   const billGstInfo = gstStates[billStateCode];

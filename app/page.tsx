@@ -1,3 +1,6 @@
+"use client";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import RevenueChart from "@/components/dashboard/RevenueChart";
 import {
   IndianRupee,
@@ -11,6 +14,35 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function DashboardPage() {
+
+  const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://novaprime-backend.vercel.app";
+
+const [products, setProducts] = useState<any[]>([]);
+const [customers, setCustomers] = useState<any[]>([]);
+const [invoices, setInvoices] = useState<any[]>([]);
+useEffect(() => {
+  fetchDashboardData();
+}, []);
+
+const fetchDashboardData = async () => {
+  try {
+    const [productsRes, customersRes, invoicesRes] =
+      await Promise.all([
+        axios.get(`${API_BASE}/api/products`),
+        axios.get(`${API_BASE}/api/customers`),
+        axios.get(`${API_BASE}/api/invoices`),
+      ]);
+
+    setProducts(productsRes.data.products || []);
+    setCustomers(customersRes.data.customers || []);
+    setInvoices(invoicesRes.data.invoices || []);
+  } catch (error) {
+    console.error("Dashboard load failed", error);
+  }
+};
+
   return (
     
       <div className="min-h-screen bg-slate-50">
@@ -38,7 +70,9 @@ export default function DashboardPage() {
                     </p>
 
                     <h2 className="mt-3 text-4xl font-bold">
-                      ₹18.4L
+                    ₹{invoices
+  .reduce((sum, inv) => sum + (inv.grandTotal || 0), 0)
+  .toLocaleString()}
                     </h2>
 
                     <p className="mt-2 text-green-300 text-sm">
@@ -60,8 +94,8 @@ export default function DashboardPage() {
                     </p>
 
                     <h2 className="mt-3 text-4xl font-bold">
-                      248
-                    </h2>
+  {customers.length}
+</h2>
                   </div>
 
                   <Users className="h-10 w-10 text-blue-600" />
@@ -96,8 +130,8 @@ export default function DashboardPage() {
                     </p>
 
                     <h2 className="mt-3 text-4xl font-bold">
-                      142
-                    </h2>
+  {invoices.length}
+</h2>
                   </div>
 
                   <Receipt className="h-10 w-10 text-green-600" />
@@ -119,7 +153,8 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="mt-6 rounded-2xl">
-  <RevenueChart />
+<RevenueChart invoices={invoices} />
+                
 </div>
               </CardContent>
             </Card>
@@ -142,7 +177,7 @@ export default function DashboardPage() {
                     </p>
 
                     <p className="text-xl font-bold">
-                      5,000 pcs
+                     {products.length} Products
                     </p>
                   </div>
 
@@ -206,17 +241,15 @@ export default function DashboardPage() {
 
                 <div className="space-y-3">
 
-                  <div className="rounded-xl border p-4">
-                    INV-001 • Paid • ₹85,000
-                  </div>
-
-                  <div className="rounded-xl border p-4">
-                    INV-002 • Pending • ₹1,50,000
-                  </div>
-
-                  <div className="rounded-xl border p-4">
-                    INV-003 • Paid • ₹70,000
-                  </div>
+                  {invoices.slice(0, 5).map((invoice) => (
+  <div
+    key={invoice._id}
+    className="rounded-xl border p-4"
+  >
+    {invoice.invoiceNo} • {invoice.status} • ₹
+    {invoice.grandTotal?.toLocaleString()}
+  </div>
+))}
 
                 </div>
               </CardContent>

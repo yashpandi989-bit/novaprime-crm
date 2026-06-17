@@ -16,7 +16,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const API_URL = "http://192.168.0.106:5000";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  "https://novaprime-backend.vercel.app";
 
 type Customer = {
   _id: string;
@@ -48,7 +50,7 @@ export default function CustomerViewPage() {
 
   const fetchCustomer = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/customers/${id}`);
+      const res = await axios.get(`${API_BASE}/api/customers/${id}`);
       setCustomer(res.data.customer);
       setNotes(res.data.customer?.notes || "");
     } catch (error) {
@@ -59,9 +61,9 @@ export default function CustomerViewPage() {
 
   const saveNotes = async () => {
     try {
-      await axios.put(`${API_URL}/api/customers/${id}/notes`, {
-        notes,
-      });
+     await axios.put(`${API_BASE}/api/customers/${id}/notes`, {
+  notes,
+});
 
       alert("Notes saved successfully");
       fetchCustomer();

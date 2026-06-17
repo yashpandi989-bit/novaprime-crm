@@ -165,14 +165,19 @@ export default function ProformaInvoicePage() {
     setPiDate(new Date().toISOString().slice(0, 10));
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("http://192.168.0.106:5000/api/products");
-      setProducts(res.data.products || []);
-    } catch (error) {
-      console.error("Products fetch error:", error);
-    }
-  };
+ const fetchProducts = async () => {
+  try {
+    const API_BASE =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://novaprime-backend.vercel.app";
+
+    const res = await axios.get(`${API_BASE}/api/products`);
+
+    setProducts(res.data.products || []);
+  } catch (error) {
+    console.error("Products fetch error:", error);
+  }
+};
 
   const billStateCode = gstin.slice(0, 2);
   const billGstInfo = gstStates[billStateCode];

@@ -27,7 +27,8 @@ type Product = {
   status: string;
 };
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://novaprime-backend.vercel.app";
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");

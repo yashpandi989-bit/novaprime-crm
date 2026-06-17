@@ -29,25 +29,30 @@ export default function EditProductPage() {
     if (id) loadProduct();
   }, [id]);
 
-  const loadProduct = async () => {
-    try {
-      const res = await axios.get(`http://192.168.0.106:5000/api/products/${id}`);
-      setForm({
-        name: res.data.product.name || "",
-        category: res.data.product.category || "",
-        hsn: res.data.product.hsn || "",
-        gst: res.data.product.gst || 18,
-        rate: res.data.product.rate || 0,
-        stock: res.data.product.stock || 0,
-        unit: res.data.product.unit || "pcs",
-        description: res.data.product.description || "",
-        status: res.data.product.status || "Active",
-      });
-    } catch (error) {
-      console.error(error);
-      alert("Product load failed");
-    }
-  };
+const loadProduct = async () => {
+  try {
+    const API_BASE =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://novaprime-backend.vercel.app";
+
+    const res = await axios.get(`${API_BASE}/api/products/${id}`);
+
+    setForm({
+      name: res.data.product.name || "",
+      category: res.data.product.category || "",
+      hsn: res.data.product.hsn || "",
+      gst: res.data.product.gst || 18,
+      rate: res.data.product.rate || 0,
+      stock: res.data.product.stock || 0,
+      unit: res.data.product.unit || "pcs",
+      description: res.data.product.description || "",
+      status: res.data.product.status || "Active",
+    });
+  } catch (error) {
+    console.error(error);
+    alert("Product load failed");
+  }
+};
 
   const updateField = (field: string, value: any) => {
     setForm({
@@ -63,7 +68,11 @@ export default function EditProductPage() {
         return;
       }
 
-      await axios.put(`http://192.168.0.106:5000/api/products/${id}`, form);
+     const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://novaprime-backend.vercel.app";
+
+await axios.put(`${API_BASE}/api/products/${id}`, form);
 
       alert("Product updated successfully");
       router.push("/products");
