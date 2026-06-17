@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, LogOut } from "lucide-react";
 import { useState } from "react";
 
 export default function Header() {
@@ -25,6 +25,11 @@ export default function Header() {
     window.location.href = path;
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
   return (
     <header className="sticky top-0 z-[9000] flex items-center gap-2 border-b bg-white px-3 py-3 pl-16 shadow-sm lg:pl-3">
       <form
@@ -39,7 +44,7 @@ export default function Header() {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search customers, products, invoice"
+          placeholder="Search customers, products, invoices..."
           className="h-12 w-full rounded-xl border bg-slate-50 pl-10 pr-3 text-sm outline-none"
         />
       </form>
@@ -47,13 +52,21 @@ export default function Header() {
       <button
         type="button"
         onClick={handleSearch}
-        className="rounded-xl bg-blue-600 px-3 py-3 text-sm font-semibold text-white"
+        className="rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700"
       >
         Go
       </button>
 
       <Bell className="hidden h-5 w-5 shrink-0 sm:block" />
-      <div className="hidden h-10 w-10 shrink-0 rounded-full bg-blue-600 sm:block" />
+
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+      >
+        <LogOut className="h-4 w-4" />
+        Logout
+      </button>
     </header>
   );
 }

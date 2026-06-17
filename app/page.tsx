@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import RevenueChart from "@/components/dashboard/RevenueChart";
 import {
@@ -18,13 +19,21 @@ export default function DashboardPage() {
   const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ||
   "https://novaprime-backend.vercel.app";
-
+const router = useRouter();
 const [products, setProducts] = useState<any[]>([]);
 const [customers, setCustomers] = useState<any[]>([]);
 const [invoices, setInvoices] = useState<any[]>([]);
+
 useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    router.replace("/login");
+    return;
+  }
+
   fetchDashboardData();
-}, []);
+}, [router]);
 
 const fetchDashboardData = async () => {
   try {
@@ -259,4 +268,5 @@ const fetchDashboardData = async () => {
         </div>
       </div>
   );
+
 }
