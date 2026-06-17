@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Building2,
   Landmark,
@@ -14,48 +14,74 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+type SettingsData = {
+  companyName: string;
+  ownerName: string;
+  email: string;
+  phone: string;
+  gstNumber: string;
+  panNumber: string;
+  address: string;
+  website: string;
+  bankName: string;
+  accountNumber: string;
+  ifsc: string;
+  branch: string;
+  upiId: string;
+  invoicePrefix: string;
+  quotationPrefix: string;
+  proformaPrefix: string;
+  defaultGst: string;
+  terms: string;
+  whatsappNumber: string;
+  whatsappMessage: string;
+  themeColor: string;
+  footerText: string;
+  sessionDays: string;
+};
+
+const defaultSettings: SettingsData = {
+  companyName: "Novaprime Engineering",
+  ownerName: "",
+  email: "novaprimeengineering@gmail.com",
+  phone: "",
+  gstNumber: "",
+  panNumber: "",
+  address: "Mumbai, Maharashtra",
+  website: "",
+  bankName: "AXIS BANK",
+  accountNumber: "926020011347605",
+  ifsc: "UTIB0000341",
+  branch: "SHIVAJI PARK, MUMBAI",
+  upiId: "",
+  invoicePrefix: "INV-",
+  quotationPrefix: "QTN-",
+  proformaPrefix: "PFI-",
+  defaultGst: "18",
+  terms:
+    "Payment: 100% advance.\nDelivery: As per stock availability.\nGST and transport charges extra if applicable.\nMaterial once sold will not be taken back.",
+  whatsappNumber: "",
+  whatsappMessage: "Hello, please find your invoice from Novaprime Engineering.",
+  themeColor: "blue",
+  footerText: "Thank you for your business.",
+  sessionDays: "7",
+};
+
 export default function SettingsPage() {
-  const [settings, setSettings] = useState({
-    companyName: "Novaprime Engineering",
-    ownerName: "",
-    email: "novaprimeengineering@gmail.com",
-    phone: "",
-    gstNumber: "",
-    panNumber: "",
-    address: "Mumbai, Maharashtra",
-    website: "",
-
-    bankName: "AXIS BANK",
-    accountNumber: "926020011347605",
-    ifsc: "UTIB0000341",
-    branch: "SHIVAJI PARK, MUMBAI",
-    upiId: "",
-
-    invoicePrefix: "INV-",
-    quotationPrefix: "QTN-",
-    proformaPrefix: "PFI-",
-    defaultGst: "18",
-    terms:
-      "Payment: 100% advance.\nDelivery: As per stock availability.\nGST and transport charges extra if applicable.\nMaterial once sold will not be taken back.",
-
-    whatsappNumber: "",
-    whatsappMessage:
-      "Hello, please find your invoice from Novaprime Engineering.",
-
-    themeColor: "blue",
-    footerText: "Thank you for your business.",
-
-    sessionDays: "7",
-  });
+  const [settings, setSettings] = useState<SettingsData>(defaultSettings);
 
   useEffect(() => {
     const saved = localStorage.getItem("crm_settings");
+
     if (saved) {
-      setSettings(JSON.parse(saved));
+      setSettings({
+        ...defaultSettings,
+        ...JSON.parse(saved),
+      });
     }
   }, []);
 
-  const handleChange = (key: string, value: string) => {
+  const handleChange = (key: keyof SettingsData, value: string) => {
     setSettings((prev) => ({
       ...prev,
       [key]: value,
@@ -158,7 +184,15 @@ export default function SettingsPage() {
   );
 }
 
-function Section({ title, icon, children }: any) {
+function Section({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon: ReactNode;
+  children: ReactNode;
+}) {
   return (
     <Card className="rounded-3xl border-0 shadow-lg">
       <CardContent className="p-6">
@@ -175,7 +209,15 @@ function Section({ title, icon, children }: any) {
   );
 }
 
-function Input({ label, value, onChange }: any) {
+function Input({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <label className="grid gap-1">
       <span className="text-sm font-medium text-slate-600">{label}</span>
@@ -188,7 +230,15 @@ function Input({ label, value, onChange }: any) {
   );
 }
 
-function Textarea({ label, value, onChange }: any) {
+function Textarea({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <label className="grid gap-1">
       <span className="text-sm font-medium text-slate-600">{label}</span>
