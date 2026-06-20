@@ -5,9 +5,9 @@ const config: CapacitorConfig = {
   appName: "NOVACRM",
   webDir: ".next",
   server: {
-    url: "http://192.168.0.106:3000",
-    cleartext: true
-  }
+    url: "https://novaprime-crm.vercel.app",
+    cleartext: false,
+  },
 };
 
 export default config;

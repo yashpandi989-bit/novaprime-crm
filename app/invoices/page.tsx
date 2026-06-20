@@ -135,14 +135,14 @@ export default function InvoicesPage() {
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-xl font-semibold">Recent Invoices</h2>
 
-              <input
-                className="w-80 rounded-2xl border bg-slate-50 px-4 py-2 outline-none"
-                placeholder="Search invoice..."
-              />
+             <input
+  className="w-full md:w-80 rounded-2xl border bg-slate-50 px-4 py-2 outline-none"
+  placeholder="Search invoice..."
+/>
             </div>
 
-            <div className="overflow-hidden rounded-2xl border">
-              <table className="w-full text-sm">
+            <div className="overflow-x-auto rounded-2xl border">
+  <table className="min-w-[950px] w-full text-sm">
                 <thead className="bg-slate-100">
                   <tr>
                     <th className="p-4 text-left">Invoice No</th>
@@ -193,15 +193,15 @@ export default function InvoicesPage() {
                       </td>
 
                       <td className="p-4">
-                        <div className="flex justify-end gap-3">
+                        <div className="flex justify-end gap-1 md:gap-3">
   <Link href={`/invoices/preview/${invoice._id}`}>
-    <button className="rounded-lg border p-2 hover:bg-slate-100" title="View">
+    <button className="rounded-lg border p-1.5 md:p-2 hover:bg-slate-100" title="View">
       <Eye className="h-4 w-4" />
     </button>
   </Link>
 
   <button
-    className="rounded-lg border p-2 hover:bg-slate-100"
+    className="rounded-lg border p-1.5 md:p-2 hover:bg-slate-100"
     title="Download"
     onClick={() => {
       window.open(`/invoices/preview/${invoice._id}`, "_blank");
@@ -211,7 +211,7 @@ export default function InvoicesPage() {
   </button>
 
   <button
-    className="rounded-lg border p-2 hover:bg-slate-100"
+    className="rounded-lg border p-1.5 md:p-2 hover:bg-slate-100"
     title="WhatsApp"
     onClick={() => {
       const invoiceUrl = `${window.location.origin}/invoices/preview/${invoice._id}`;
